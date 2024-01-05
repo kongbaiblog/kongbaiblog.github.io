@@ -1,0 +1,53 @@
+html{
+    background: url(./pic/bg1.jpg) no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+h1{
+    margin-top: 5%;
+    font-family: font2;
+    text-align: center;
+}
+h2{
+    font-family: font1;
+}
+.content{
+    top: 30%;
+    position: absolute;
+    background-color: rgb(255,255,255,0.7);
+    width: 50%;
+    border-radius: 25px;
+    padding: 5px 40px;
+    box-sizing: border-box;
+}
+div1{
+    margin-top: 50%;
+    height:100%; 
+    margin:0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.stec{
+    color: black;
+}
+.little-title{
+    font-size: x-large;
+    font-family: font2;
+    text-align: center;
+}
+.code{
+    font-size: large;
+    font-family: codefont;
+    border-radius: 25px;
+    padding: 5px 40px;
+    box-sizing: border-box;
+    background-color: rgb(73, 72, 72);
+}
+.codeimg{
+    width: 4%;
+}
+.setcs{
+    font-size: large;
+    font-family: font1;
+}

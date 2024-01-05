@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Python实例——飞机大战</title>
+        <style>
+            @font-face {
+            font-family: font2;
+            src: url("./font/TsangerYuYangT_W04_W04.ttf");
+        }
+        @font-face {
+            font-family: font1;
+            src: url("./font/TsangerYuYangT_W02_W02.ttf");
+        }
+        @font-face {
+            font-family: codefont;
+            src: url("./font/TsangerYuYangT_W01_W01.ttf");
+        }
+        h2.setc{padding-left: 1em;}
+        </style>
+        <link rel="stylesheet" href="article.css" type="text/css">
+        <body>
+            <div>
+                <h1>Python实例——飞机大战</h1>
+            </div>
+            <div1>
+                <div class="content">
+                    <h3 class="little-title">文件列表</h3>
+                    <img src="./pic/pythonfjdzFileList.png">
+                    <h3 class="little-title">工具</h3>
+                    <h2 class="setc">
+                    &nbsp; &nbsp; &nbsp; &nbsp;敲代码用的是vscode，绘图用的是Krita，非非非非非非常好用</h2>
+                    <h3 class="little-title">模块</h3>
+                    <h2 class="setc">
+                    &nbsp; &nbsp; &nbsp; &nbsp;需要导入的模块：
+                    
+                    <div style="color: black">
+                    &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;pygame
+                    &nbsp; &nbsp; &nbsp; &nbsp;sys
+                    &nbsp; &nbsp; &nbsp; &nbsp;os
+                    &nbsp; &nbsp; &nbsp; &nbsp;random
+                    &nbsp; &nbsp; &nbsp; &nbsp;threading
+                    &nbsp; &nbsp; &nbsp; &nbsp;time</div>
+                    <br>&nbsp; &nbsp; &nbsp; &nbsp;以上模块中pygame与threading需要下载，可以在cmd中执行下面两个命令：</h2>
+                    <h2 class="setc">
+                        <div class="code" style="color: rgb(212, 212, 212);">
+                        pip install pygame
+                        </div>
+                    </h2>
+                    <h2 class="setc">
+                        <div class="code" style="color: rgb(212, 212, 212);">
+                        pip install threading
+                        </div>
+                    
+                &nbsp; &nbsp; &nbsp; &nbsp;time可能会与pygame里的time冲突，所以可以这样导入</h2>
+                        <h2 class="setc">
+                            <div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>
+                                import pygame<br><br>
+                                from pygame import *<br><br>
+                                import sys,os,random,threading<br><br>
+                                import time as tm<br><br>
+                                from threading import *<br><br>
+                        </h2>
+                    </h2>
+                    <h3 class="little-title">内容</h3>
+                    <h2 class="setc">
+                    &nbsp; &nbsp; &nbsp; &nbsp;获取到文件位置很重要，这样方便调用文件</h2>
+                    <h2 class="setc">
+                        <div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>
+                            path=os.getcwd()<br><br>
+path=list(path)<br><br>
+i=0<br><br>
+while i<len(path):<br><br>
+&nbsp; &nbsp; &nbsp; &nbsp;  if path[i]=='\\':<br><br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;     path[i]='/'<br><br>
+&nbsp; &nbsp; &nbsp; &nbsp;  i+=1<br><br>
+path=''.join(path)</div>
+                    &nbsp; &nbsp; &nbsp; &nbsp;既然是飞机大战，一些基本的内容还是必须有的，例如敌人随机从窗口上方的位置出现,这里就用到了random来随机敌人飞机的横坐标，可以创建一个类来初始化敌人
+                    </h2>
+                    <h2 class="setc">
+                        <div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>
+                            class Other_plain:<br><br>
+                            &nbsp; &nbsp; &nbsp; &nbsp;'''敌飞机'''<br><br>
+                            &nbsp; &nbsp; &nbsp; &nbsp; other_plain=pygame.image.load(path+"/pic/otherfly.png")<br><br>
+                            &nbsp; &nbsp; &nbsp; &nbsp; other_plain_rect=other_plain.get_rect()<br><br>
+                            &nbsp; &nbsp; &nbsp; &nbsp; other_plain_two=pygame.image.load(path+'/pic/otherfly2.png')<br><br>
+                            &nbsp; &nbsp; &nbsp; &nbsp;  other_plain_two_rect=other_plain_two.get_rect()<br><br>
+    &nbsp; &nbsp; &nbsp; &nbsp;  other_plain_three=pygame.image.load(path+'/pic/otherfly3.png')<br><br>
+    &nbsp; &nbsp; &nbsp; &nbsp;  other_plain_three_rect=other_plain_three.get_rect()<br><br>
+    &nbsp; &nbsp; &nbsp; &nbsp; other_plain_three_rect.x=random.randint(0,650)<br><br>
+    &nbsp; &nbsp; &nbsp; &nbsp; other_plain_two_rect.x=random.randint(0,650)<br><br>
+    &nbsp; &nbsp; &nbsp; &nbsp; other_plain_rect.x=random.randint(0,650)<br><br>
+    &nbsp; &nbsp; &nbsp; &nbsp;otherx=0<br><br>
+      &nbsp; &nbsp; &nbsp; &nbsp;   othery=1<br><br>
+   &nbsp; &nbsp; &nbsp; &nbsp; otherx_t=0<br><br>
+   &nbsp; &nbsp; &nbsp; &nbsp;  othery_t=1<br><br>
+   &nbsp; &nbsp; &nbsp; &nbsp; otherx_three=0<br><br>
+   &nbsp; &nbsp; &nbsp; &nbsp; othery_three=1<br><br>
+   &nbsp; &nbsp; &nbsp; &nbsp;  speed=[otherx,othery]<br><br>
+   &nbsp; &nbsp; &nbsp; &nbsp;  other_two_lock=False<br><br>
+   &nbsp; &nbsp; &nbsp; &nbsp;   kill_lock=[False,False,False]</div>
+    <br>&nbsp; &nbsp; &nbsp; &nbsp;上面初始化了三个敌人，其中的kill_lock=[False,False,False]是这三个敌人的状态，以此保证三个敌人的状态互不干扰，不然一个敌人G掉了，另外两个也没了，哦，对了窗口的宽为800高为1000
+    <br>&nbsp; &nbsp; &nbsp; &nbsp;子弹的话我又画了一个<img src="./pic/bullet.png">
+    <br>&nbsp; &nbsp; &nbsp; &nbsp;结果后来越看越像煎蛋，于是就有了这个<img src="./pic/ruizhidejiandan.png">，就很离谱（实例中不会有这个煎蛋）
+    <br>&nbsp; &nbsp; &nbsp; &nbsp;敌人飞机我也修改了一下，因为加入了玩家飞机转向，方便区分，敌人飞机就修饰了一下，变成了这样<img src="./pic/otherfly.png">
+    <br>&nbsp; &nbsp; &nbsp; &nbsp;那么这个飞机转向怎么搞，首先转向的方式是左shift+方向键（w,a,s,d），然后再将飞机图片更改，设置一个初始值为w的字符变量last_key来记录飞机方向，以此来判定子弹的射出方向，然后我就发现当你发射子弹后转向，子弹也会跟着转弯，还挺好玩的，如果想固定也好办，给判定子弹方向多加一个条件，如果是子弹移动中，使bullet_lock=True，只有当bullet_lock=False时才判定方向（但是我没加，感觉子弹拐弯还挺有意思的，哈哈哈哈）
+    <br>&nbsp; &nbsp; &nbsp; &nbsp;子弹这样子初始化
+    <div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>
+        class Bullet:<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;  '''子弹'''<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;  bullet=pygame.image.load(path+'/pic/bullet.png')<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;  bullet_rect=bullet.get_rect()<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;   speed=[0,-1]</div>
+    <br>&nbsp; &nbsp; &nbsp; &nbsp;看起来还蛮简单的，注意这里的speed=[0,1]在后面判定子弹方向时会有更改的
+    <br>&nbsp; &nbsp; &nbsp; &nbsp;敌飞机爆炸：
+    <div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>
+
+        if back_other_plain==1:<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;#print("change")<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;other.other_plain=pygame.image.load(path+'/pic/otherfly.png')<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;other.othery=1<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;other.other_plain_rect.x=random.randint(0,650)<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;other.other_plain_rect.y=0<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp; back_other_plain=0<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;other.kill_lock[0]=False<br><br><br><br>
+
+        if ((other.other_plain_rect.x-30)<=bullet.bullet_rect.x<=(other.other_plain_rect.x+30) and (other.other_plain_rect.y-20)<=bullet.bullet_rect.y<=(other.other_plain_rect.y+20) or R.other_plain_kill==True) and other.kill_lock[0]==False:<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp; point+=1<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp; print(point)<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;  other.kill_lock[0]=True<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;  other.othery=0<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;  other.other_plain=pygame.image.load(path+'/pic/otherflyboom.png')<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;  try:<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;      catch.start()<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;  except:<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;     catch='catch'+str(threading_number)<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;     threading_number+=1<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;     catch=threading.Thread(target=Celled_Time,name='T1'+str(threading_number),daemon=False)<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;     catch.start()<br>
+        
+        </div>
+        <br>&nbsp; &nbsp; &nbsp; &nbsp;第一个if是将敌飞机重置，条件是back_other_plain==1，这个条件是在线程中延时1秒后变为1；第二个if是判定敌飞机是否爆炸，当other.kill_lock[0]的值变为True就不会反复爆炸了。进入分支首先分数+1，然后将这个敌飞机的图片变为爆炸的图片，进入线程与第一个if联系起来就完成了
+    <br>&nbsp; &nbsp; &nbsp; &nbsp;然后就是三个技能，R是清图，直接判定所有敌飞机爆炸Boom，T技能是进行一段位移，根据最后的方向键来判定位移方向，鼠标左键是传送的鼠标点击的位置。释放技能后将技能锁定，开一个线程即使，计时结束解锁技能，注意开线程的时候不能一直单开一个，会报错，就是可以这样开
+    <div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>
+    try:<br><br>
+    &nbsp; &nbsp; &nbsp; &nbsp; catch_T.start()<br><br>
+                except:<br><br>
+                &nbsp; &nbsp; &nbsp; &nbsp;  catch_T='catch_T'+str(T_number)<br><br>
+                &nbsp; &nbsp; &nbsp; &nbsp;  catch_T=threading.Thread(target=T_Time,name='T4',daemon=False)<br><br>
+                &nbsp; &nbsp; &nbsp; &nbsp;  catch_T.start()<br><br>
+                &nbsp; &nbsp; &nbsp; &nbsp;  T_number+=1<br>
+</div>
+
+    <br>&nbsp; &nbsp; &nbsp; &nbsp;上面这个是T技能进入CD的线程，线程指到的函数是这样：
+    <div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>
+        def T_Time():<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;#print('线程T4')<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp; E.E_pic=pygame.image.load(path+'/pic/Tjinenglock.png')<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp; E.E_lock=True<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;  tm.sleep(float(T_cd))<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;  E.E_lock=False<br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;  E.E_pic=pygame.image.load(path+'/pic/Tjineng.png')<br>
+        </div>
+        <br>&nbsp; &nbsp; &nbsp; &nbsp;这里类是E的原因是因为一开始想用E作为这个技能，结果发现移动不得劲，所以触发建改为了T，写完了太多没法改，所以E和T是同一个技能。Tjinenglock.png是原图标变为灰色。T_cd是set.ini中读取到的（主程序中有默认值，可以参考代码与set.ini中的说明）
+        <br>&nbsp; &nbsp; &nbsp; &nbsp;最后的死亡判定就比较简单了，直接检查敌飞机是否与玩家处于同水平线（当然你也可以改为一个盒子，只有敌飞机进入玩家盒子内后判定玩家GG），当然，如果敌飞机即将到达玩家同一水平向时利用鼠标左键技能传送到敌飞机上方就不会被判定趋势了
+        <br><br><br><br>代码在GitHub：&nbsp; &nbsp; <a href="https://github.com/kongbaiblog/Python-feijidazhan" target="_blank">https://github.com/kongbaiblog/Python-feijidazhan</a>
+    </h2><br><br><br><br><br><br>
+    <h5 style="font-family: font1;text-align: center;font-size: large;">&copy;2023&nbsp; &nbsp;空白</h5>
+</div>
+            </div1>
+        </body>
+    </head>
+</html>

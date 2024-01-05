@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>C语言单向链表与双向链表</title>
+        <style>
+            @font-face {
+            font-family: font2;
+            src: url("./font/TsangerYuYangT_W04_W04.ttf");
+        }
+        @font-face {
+            font-family: font1;
+            src: url("./font/TsangerYuYangT_W02_W02.ttf");
+        }
+        @font-face {
+            font-family: codefont;
+            src: url("./font/TsangerYuYangT_W01_W01.ttf");
+        }
+        h2.setc{padding-left: 1em;}
+        </style>
+        <link rel="stylesheet" href="article.css" type="text/css">
+        <body>
+            <div>
+                <h1>C语言单向链表与双向链表</h1>
+            </div>
+            <div1>
+                <div class="content">
+                    <h3 class="little-title">单向链表</h3>
+                    <h2 class="setc">
+                         创建<br><br>
+                        &nbsp; &nbsp;&nbsp; &nbsp;首先链表这个数据结构的结构体由两个部分组成，分别是数据域和指针域，也就是存放数据的变量和指针
+                        <div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>
+                        struct student{<br><br>
+                            char name[30]; &nbsp; &nbsp; &nbsp; &nbsp;   //数据域<br><br>
+                            float number;   &nbsp; &nbsp; &nbsp; &nbsp;  //数据域<br><br>
+                            struct student *pNext;   &nbsp; &nbsp; &nbsp; &nbsp; //指针域<br><br>
+                        };
+                        </div>
+                        <br><br>&nbsp; &nbsp;&nbsp; &nbsp; 链表的创建，就是在创建节点（malloc）和输入数据的同时让每个节点（结构体）都连接起来，连接的方式就是靠指针域中的指针，让每个结点的pNext都指向下一个节点，最后一个节点没节点可指的呀，那就让最后一个节点的指针（pNext）指向空（NULL）
+                        这样，每个节点都连在了一起，就形成了一个长链，链表就创建好啦
+                        <br><br><div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>
+                            struct student *pHead=NULL;&nbsp; &nbsp; &nbsp; &nbsp;    //头节点，指向第一个结构体<br><br>
+                            struct student *pNew,*pEnd;  &nbsp; &nbsp; &nbsp; &nbsp;  //新节点和最后一个节点<br><br>
+                            pNew=pEnd=(struct student*)malloc(sizeof(struct student));&nbsp; &nbsp; &nbsp; &nbsp;   //给新节点和最后一个节点分配内存<br><br>
+                            printf("名字 学号：");<br><br>
+                            scanf("%s %f",&pNew->name,&pNew->number);&nbsp; &nbsp; &nbsp; &nbsp;   //输入数据<br><br>
+                            /*判断当数据中的number等于0时停止分配新节点*/<br><br>
+                            while(pNew->number!=0){<br><br>
+                                len++;  &nbsp; &nbsp; &nbsp; &nbsp; //长度（将会在后面完整代码中出现，这是个全局变量）<br><br>
+                                if(len==1){<br><br>
+                                    pNew->pNext=NULL;  &nbsp; &nbsp; &nbsp; &nbsp; //当长度等于1时让新节点的指针指向空（NULL）<br><br>
+                                    pEnd=pNew;<br><br>
+                                    pHead=pNew;<br><br>
+                                }<br><br>
+                                else{<br><br>
+                                    pNew->pNext=NULL; &nbsp; &nbsp; &nbsp; &nbsp;  //当长度大于1时新节点指针指向空<br><br>
+                                    pEnd->pNext=pNew; &nbsp; &nbsp; &nbsp; &nbsp;  //最后一个节点指向新节点<br><br>
+                                    pEnd=pNew;  <br><br>
+                                }<br><br>
+                                pNew=(struct student*)malloc(sizeof(struct student)); &nbsp; &nbsp; &nbsp; &nbsp;  //分配新节点<br><br>
+                                scanf("%s %f",&pNew->name,&pNew->number);<br><br>
+                            }<br>
+                            free(pNew); &nbsp; &nbsp; &nbsp; &nbsp;  //将多分配出的节点释放掉<br><br>
+                            return pHead; &nbsp; &nbsp; &nbsp; &nbsp;  //返回链表的的头节点<br><br>
+                        }
+                        </div>
+                        <br><br>
+                        &nbsp; &nbsp;&nbsp; &nbsp;或者还可以这样创建<br><br>
+                        <div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>struct student *create(){<br><br>
+                            struct student *pHead,*pNew,*p;  <br><br>
+                            pNew=(struct student*)malloc(sizeof(struct student));<br><br>
+                            printf("输入名字 学号：\n");<br><br>
+                            scanf("%s %f",&pNew->name,&pNew->number);<br><br>
+                            pNew->pNext=NULL;<br><br>
+                            pHead=pNew;<br><br>
+                            p=pNew;<br><br>
+                            pNew=(struct student*)malloc(sizeof(struct student));<br><br>
+                            scanf("%s %f",&pNew->name,&pNew->number);<br><br>
+                            while(pNew->number!=0){<br><br>
+                                p->pNext=pNew;<br><br>
+                                p=p->pNext;<br><br>
+                                pNew=(struct student*)malloc(sizeof(struct student));<br><br>
+                                scanf("%s %f",&pNew->name,&pNew->number);<br><br>
+                            }<br><br>
+                            p->pNext=NULL;<br><br>
+                            free(pNew);<br><br>
+                            return pHead;<br><br>
+                        }
+                        </div><br><br>
+                        遍历<br><br>
+                        &nbsp; &nbsp;&nbsp; &nbsp;知道如何创建了，下一步就是遍历
+                        遍历的话就很简单了，就是用循环让指针指向下一个节点然后输出数据域里的数据就好了<br><br>
+                        <div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>
+                            void print(struct student *pHead){  &nbsp; &nbsp; &nbsp; &nbsp;//遍历函数，传入头节点<br><br>
+                            struct student *tep;   &nbsp; &nbsp; &nbsp; &nbsp; //遍历指针<br><br>
+                            int i=1; &nbsp; &nbsp; &nbsp; &nbsp;   //长度<br><br>
+                            tep=pHead;&nbsp; &nbsp; &nbsp; &nbsp;  //让遍历指针指向头节点<br><br>
+                            printf("----------共%d个成员----------\n",len);&nbsp; &nbsp; &nbsp; &nbsp;  //输出长度<br><br>
+                            /*当指针等于NULL，停止循环*/<br><br>
+                            while(tep!=NULL){<br><br>
+                                printf("No.%d名字:%s\n",i,tep->name); &nbsp; &nbsp; &nbsp; &nbsp; //输出数据<br><br>
+                                printf("学号:%g\n\n",tep->number); &nbsp; &nbsp; &nbsp; &nbsp; //输出数据<br><br>
+                                i++; &nbsp; &nbsp; &nbsp; &nbsp; //第i个数据<br><br>
+                                tep=tep->pNext; &nbsp; &nbsp; &nbsp; &nbsp; //指向下一个节点<br><br>
+                            }<br><br>
+                            printf("\n\n");<br><br>
+                        }
+                        </div><br><br>
+                        加入新节点
+基本的创建和遍历学会后，现在来看如何在操作过程中加入新结点<br><br>
+
+1.在头节点后加入<br><br>
+&nbsp; &nbsp;&nbsp; &nbsp;头节点后好说，先在新开辟的结构体里输入新数据，然后让新节点的pNext指向头节点的pNext，再让头节点的pNext指向新节点，这样，新的数据就被加入到了头节点后面<br><br>
+                        <div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>
+                            struct student *addah(struct student *pHead){  &nbsp; &nbsp; &nbsp; &nbsp;//加入函数，传入头节点<br><br>
+                            struct student *pNew,*tep; &nbsp; &nbsp; &nbsp; &nbsp; //新的节点（这里的*tep没有实际意义，可不要）<br><br>
+                            pNew=(struct student*)malloc(sizeof(struct student));  &nbsp; &nbsp; &nbsp; &nbsp;//为新节点开辟内存<br><br>
+                            printf("姓名 学号：");<br><br>
+                            scanf("%s %f",&pNew->name,&pNew->number); &nbsp; &nbsp; &nbsp; &nbsp; //输入新数据<br><br>
+                            pNew->pNext=pHead->pNext;  &nbsp; &nbsp; &nbsp; &nbsp;//让新节点的pNext指针指向头节点的pNext<br><br>
+                            pHead->pNext=pNew; &nbsp; &nbsp; &nbsp; &nbsp; //让头节点的pNext指向新节点<br><br>
+                            len+=1; &nbsp; &nbsp; &nbsp; &nbsp; //长度加1<br><br>
+                            return pHead; &nbsp; &nbsp; &nbsp; &nbsp; //返回头节点<br><br>
+                        }
+                        </div><br><br>
+                        2.在链表末尾加入<br><br>
+                        &nbsp; &nbsp;&nbsp; &nbsp;这个同样非常简单，方法就是先创建一个结构体指针（*tep）和新节点（*pNew），先输入新节点的数据，接着让 tep指向头节点，然后让 tep类似于遍历时那样一路往下指，直到 tep指向了最后一个节点为止， 最后让 *tep的pNext指向新节点，新节点的pNext等于NULL就可以啦
+                        <br><br>
+                        <div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>
+                            struct student *addend(struct student *pHead){ &nbsp; &nbsp; &nbsp; &nbsp; //加入函数，传入头节点<br><br>
+                                struct student *tep,*pNew; &nbsp; &nbsp; &nbsp; &nbsp; //一个用来指向原链表最后一个节点的结构体指针（*tep）和新节点（*pNew）<br><br>
+                                pNew=(struct student*)malloc(sizeof(struct student)); &nbsp; &nbsp; &nbsp; &nbsp; //为新节点开辟内存<br><br>
+                                tep=pHead;  &nbsp; &nbsp; &nbsp; &nbsp;//让tep指向头节点用来找原链表的最后一个节点<br><br>
+                                printf("姓名 学号：");<br><br>
+                                scanf("%s %f",&pNew->name,&pNew->number); &nbsp; &nbsp; &nbsp; &nbsp; //输入新数据<br><br>
+                                pNew->pNext=NULL; &nbsp; &nbsp; &nbsp; &nbsp; //新节点的pNew指向NULL<br><br>
+                                /*当tep的pNext不是NULL是，tep指向tep的下一个节点，直到tep的pNext是NULL*/<br><br>
+                                while(tep->pNext!=NULL){<br><br>
+                                    tep=tep->pNext;<br><br>
+                                }<br><br>
+                                tep->pNext=pNew; &nbsp; &nbsp; &nbsp; &nbsp; //原链表的最后一个节点的pNext指向新节点<br><br>
+                                len+=1;  &nbsp; &nbsp; &nbsp; &nbsp;//长度加1<br><br>
+                                return pHead; &nbsp; &nbsp; &nbsp; &nbsp; //返回头节点<br><br>
+                            }
+                            </div><br><br>
+                            3.指定位置加入<br><br>
+                            &nbsp; &nbsp;&nbsp; &nbsp;这个就稍微多一些，加入方法就是先创建两个结构体指针（ *pBefore和 *p）还有一个新节点（*pNew），一个要加入的位置数据（int location）和记录长度数据（int n=2）
+先说指针部分，第一个指针pBefore是用来指向pHead的指针，至于before是在另一个指针p之前的意思，那么，第二个指针p就是pBefore的pNext所指向的节点，这样做，是为了能让新节点能够加入到两个相邻节点之间（不是头节点后，也不是末尾位置），加入方式和加入头节点后的方法一样，首先让新节点的pNext指向pBefore的pNext，然后再让pBefore的pNext指向新节点，这样，就完成了在两个相邻节点之间加入，这里只是把pBefore的pNext换成了p
+然后就是那两个整形了，location是你要加入的位置，n就是去寻找那个位置，那为什么等于2？原因是当n=1的时候所加入的数据会是你输入的位置的下一位，比如你想要加入到第3个位置，如果n=1，那实际加入的位置就是4，所以n=2，从2开始
+                            <br><br>
+                            <div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>
+                                struct student *addlocation(struct student *pHead){ &nbsp; &nbsp; &nbsp; &nbsp; //加入函数，传入头节点<br><br>
+                                    struct student *pBefore,*p,*pNew; &nbsp; &nbsp; &nbsp; &nbsp; //一个用于指向头节点的指针（*pBefore）和一个头节点下一个节点的指针（*p），还有一个新节点（*pNew）<br><br>
+                                    p=pHead->pNext; &nbsp; &nbsp; &nbsp; &nbsp; //p指向头节点的下一个节点<br><br>
+                                    pBefore=pHead; &nbsp; &nbsp; &nbsp; &nbsp; //pBefore指向头节点<br><br>
+                                    int location,n=2; &nbsp; &nbsp; &nbsp; &nbsp; //要加入的指定位置（location）和用于寻找位置（n=2）的整形<br><br>
+                                    pNew=(struct student*)malloc(sizeof(struct student));  &nbsp; &nbsp; &nbsp; &nbsp;//为新节点开辟内存<br><br>
+                                    printf("姓名 学号：");<br><br>
+                                    scanf("%s %f",&pNew->name,&pNew->number); &nbsp; &nbsp; &nbsp; &nbsp; //输入新数据<br><br>
+                                    printf("要加入的位置：");<br><br>
+                                    scanf("%d",&location); &nbsp; &nbsp; &nbsp; &nbsp; //输入要加入的位置<br><br>
+                                    /*当要加入的位置是1时，直接让新节点的pNext指向头节点，然后返回pNew*/<br><br>
+                                    if(location==1){<br><br>
+                                        pNew->pNext=pHead;<br><br>
+                                        len+=1; &nbsp; &nbsp; &nbsp; &nbsp; //长度加1<br><br>
+                                        return pNew;<br><br>
+                                    }<br><br>
+                                    /*当要加入的位置是末尾时，请参考上面的第二种加入方法*/<br><br>
+                                    if(location==(len+1)){<br><br>
+                                        while(p->pNext!=NULL){<br><br>
+                                            p=p->pNext;<br><br>
+                                        }<br><br>
+                                        pNew->pNext=NULL;<br><br>
+                                        p->pNext=pNew;<br><br>
+                                        len+=1;&nbsp; &nbsp; &nbsp; &nbsp;  //长度加1<br><br>
+                                        return pHead;<br><br>
+                                    }<br><br>
+                                    /*当要加入的位置不是开头和结尾时*/<br><br>
+                                    else{<br><br>
+                                    /*用n去寻找location是哪个位置*/<br><br>
+                                        while(n!=location){<br><br>
+                                            n++;<br><br>
+                                            p=p->pNext;  &nbsp; &nbsp; &nbsp; &nbsp;//让p指向p的下一个节点<br><br>
+                                            pBefore=pBefore->pNext;  &nbsp; &nbsp; &nbsp; &nbsp;//让pBefore指向pBefore的下一个节点<br><br>
+                                        }<br><br>
+                                    /*找到要加入的位置后*/	<br><br>
+                                        pNew->pNext=p; &nbsp; &nbsp; &nbsp; &nbsp; //让新的节点指向相邻节点的后一个节点<br><br>
+                                        pBefore->pNext=pNew; &nbsp; &nbsp; &nbsp; &nbsp; //让相邻节点的前一个节点指向新节点<br><br>
+                                        len+=1; &nbsp; &nbsp; &nbsp; &nbsp; //长度加1<br><br>
+                                        return pHead;  &nbsp; &nbsp; &nbsp; &nbsp;//返回头节点<br><br>
+                                    }<br><br>
+                                }
+                                
+                            </div><br><br>
+                            删除<br><br>
+                            &nbsp; &nbsp;&nbsp; &nbsp;最后一个，如何在操作过程中删除某一个节点，同样也要去寻找位置，方法类似于加入方法的第三个，所以，现在来说说如何删除
+删除的方法就是让被删除的上一个节点的pNext指向被删除的下一个节点然后将其free掉，两个指针一个before（等同于上面的pBefore），一个search（等同于上面的p），这里的search就是要被free的节点
+<br><br>
+                            <div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>
+                                struct student *del(struct student *pHead){ &nbsp; &nbsp; &nbsp; &nbsp; //删除函数，传入头节点<br><br>
+                                    /*指针和整形数据类似于加入方法第三个*/<br><br>
+                                     struct student *before,*search; &nbsp; &nbsp; &nbsp; &nbsp; //search是要被释放的节点，before是被释放节点的前一个<br><br>
+                                     int lead,i=2;<br><br>
+                                     before=pHead;<br><br>
+                                     search=pHead->pNext;<br><br>
+                                     printf("输入要删除的位置：");<br><br>
+                                     scanf("%d",&lead);<br><br>
+                                     /*寻找方式一样*/<br><br>
+                                     while(1){<br><br>
+                                         if(lead==1){<br><br>
+                                             len--;<br><br>
+                                             return search;<br><br>
+                                         }<br><br>
+                                         if(i==lead){<br><br>
+                                             before->pNext=search->pNext; &nbsp; &nbsp; &nbsp; &nbsp; //before的pNext跳过search指向search的下一个节点（search的pNext）<br><br>
+                                             free(search);&nbsp; &nbsp; &nbsp; &nbsp; //释放<br><br>
+                                             break;<br><br>
+                                         }<br><br>
+                                         i++;<br><br>
+                                         before=before->pNext;  &nbsp; &nbsp; &nbsp; &nbsp;//让before等于它下一个节点<br><br>
+                                         search=search->pNext;&nbsp; &nbsp; &nbsp; &nbsp;  //让search等于它下一个节点<br><br>
+                                     }<br><br>
+                                     len--; &nbsp; &nbsp; &nbsp; &nbsp; //长度减1<br><br>
+                                     return pHead; &nbsp; &nbsp; &nbsp; &nbsp; //返回头节点<br><br>
+                                 }
+                                 
+                            </div><br><br>
+                            &nbsp; &nbsp;&nbsp; &nbsp;完整代码<br><br>
+                            <div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>
+                                #include < stdio.h><br><br>
+                                    #include < stdlib.h><br><br>
+                                    int len; //链表长度<br><br>
+                                    struct student{<br><br>
+                                        char name[30];<br><br>
+                                        float number;<br><br>
+                                        struct student *pNext;<br><br>
+                                    };<br><br>
+                                    /*创建*/ <br><br>
+                                    struct student *create(){<br><br>
+                                        struct student *pHead=NULL;<br><br>
+                                        struct student *pNew,*pEnd;<br><br>
+                                        pNew=pEnd=(struct student*)malloc(sizeof(struct student));<br><br>
+                                        printf("名字 学号：");<br><br>
+                                        scanf("%s %f",&pNew->name,&pNew->number);<br><br>
+                                        while(pNew->number!=0){<br><br>
+                                            len++;<br><br>
+                                            if(len==1){<br><br>
+                                                pNew->pNext=NULL;<br><br>
+                                                pEnd=pNew;<br><br>
+                                                pHead=pNew;<br><br>
+                                            }<br><br>
+                                            else{<br><br>
+                                                pNew->pNext=NULL;<br><br>
+                                                pEnd->pNext=pNew;<br><br>
+                                                pEnd=pNew;<br><br>
+                                            }<br><br>
+                                            pNew=(struct student*)malloc(sizeof(struct student));<br><br>
+                                            scanf("%s %f",&pNew->name,&pNew->number);<br><br>
+                                        }<br><br>
+                                        free(pNew);<br><br>
+                                        return pHead;<br><br>
+                                    }<br><br>
+                                    /*头表后加入*/<br><br>
+                                    struct student *addah(struct student *pHead){<br><br>
+                                        struct student *pNew,*tep;<br><br>
+                                        pNew=(struct student*)malloc(sizeof(struct student));<br><br>
+                                        printf("姓名 学号：");<br><br>
+                                        scanf("%s %f",&pNew->name,&pNew->number);<br><br>
+                                        pNew->pNext=pHead->pNext;<br><br>
+                                        pHead->pNext=pNew;<br><br>
+                                        len+=1;<br><br>
+                                        return pHead;<br><br>
+                                    }<br><br>
+                                    /*加入结尾*/ <br><br>
+                                    struct student *addend(struct student *pHead){<br><br>
+                                        struct student *tep,*pNew;<br><br>
+                                        pNew=(struct student*)malloc(sizeof(struct student));<br><br>
+                                        tep=pHead;<br><br>
+                                        printf("姓名 学号：");<br><br>
+                                        scanf("%s %f",&pNew->name,&pNew->number);<br><br>
+                                        pNew->pNext=NULL;<br><br>
+                                        while(tep->pNext!=NULL){<br><br>
+                                            tep=tep->pNext;<br><br>
+                                        }<br><br>
+                                        tep->pNext=pNew;<br><br>
+                                        len+=1;<br><br>
+                                        return pHead;<br><br>
+                                    }<br><br>
+                                    /*指定位置删除*/ <br><br>
+                                    struct student *del(struct student *pHead){ <br><br>
+                                        struct student *before,*search; <br><br>
+                                        int lead,i=2;<br><br>
+                                        before=pHead;<br><br>
+                                        search=pHead->pNext;<br><br>
+                                        printf("输入要删除的位置：");<br><br>
+                                        scanf("%d",&lead);<br><br>
+                                        while(1){<br><br>
+                                            if(lead==1){<br><br>
+                                                len--;<br><br>
+                                                return search;<br><br>
+                                            }<br><br>
+                                            if(i==lead){<br><br>
+                                                before->pNext=search->pNext; <br><br>
+                                                free(search);  <br><br>
+                                                break;<br><br>
+                                            }<br><br>
+                                            i++;<br><br>
+                                            before=before->pNext;<br><br>
+                                            search=search->pNext;<br><br>
+                                        }<br><br>
+                                        len--;  <br><br>
+                                        return pHead;<br><br>
+                                    }<br><br>
+                                    /*指定位置加入*/ <br><br>
+                                    struct student *addlocation(struct student *pHead){<br><br>
+                                        struct student *pBefore,*p,*pNew;<br><br>
+                                        p=pHead->pNext;<br><br>
+                                        pBefore=pHead;<br><br>
+                                        int location,n=2;<br><br>
+                                        pNew=(struct student*)malloc(sizeof(struct student));<br><br>
+                                        printf("姓名 学号：");<br><br>
+                                        scanf("%s %f",&pNew->name,&pNew->number);<br><br>
+                                        printf("要加入的位置：");<br><br>
+                                        scanf("%d",&location);<br><br>
+                                        if(location==1){<br><br>
+                                            pNew->pNext=pHead;<br><br>
+                                            len+=1;<br><br>
+                                            return pNew;<br><br>
+                                        }<br><br>
+                                        if(location==(len+1)){<br><br>
+                                            while(p->pNext!=NULL){<br><br>
+                                                p=p->pNext;<br><br>
+                                            }<br><br>
+                                            pNew->pNext=NULL;<br><br>
+                                            p->pNext=pNew;<br><br>
+                                            len+=1;<br><br>
+                                            return pHead;<br><br>
+                                        }<br><br>
+                                        else{<br><br>
+                                            while(n!=location){<br><br>
+                                                n++;<br><br>
+                                                pBefore=pBefore->pNext;<br><br>
+                                            }<br><br>
+                                            pNew->pNext=pBefore->pNext;<br><br>
+                                            pBefore->pNext=pNew;<br><br>
+                                            len+=1;<br><br>
+                                            return pHead;<br><br>
+                                        }<br><br>
+                                    }<br><br>
+                                    /*遍历*/ <br><br>
+                                    void print(struct student *pHead){<br><br>
+                                        struct student *tep;<br><br>
+                                        int i=1;<br><br>
+                                        tep=pHead;<br><br>
+                                        printf("----------共%d个成员----------\n",len);<br><br>
+                                        while(tep!=NULL){<br><br>
+                                            printf("No.%d名字:%s\n",i,tep->name);<br><br>
+                                            printf("学号:%g\n\n",tep->number);<br><br>
+                                            i++;<br><br>
+                                            tep=tep->pNext;<br><br>
+                                        }<br><br>
+                                        printf("\n\n");<br><br>
+                                    }<br><br>
+                                    int main(){<br><br>
+                                        struct student *pHead;<br><br>
+                                        pHead=create();<br><br>
+                                        print(pHead);<br><br>
+                                        pHead=addah(pHead);<br><br>
+                                        print(pHead);<br><br>
+                                        pHead=addend(pHead);<br><br>
+                                        print(pHead);<br><br>
+                                        pHead=addlocation(pHead);<br><br>
+                                        print(pHead);<br><br>
+                                        pHead=del(pHead);<br><br>
+                                        print(pHead);<br><br>
+                                    }
+                            </div>
+                            <h3 class="little-title">双向链表</h3>
+                            <h4 class="setcs">
+                            创建<br><br>
+                            &nbsp; &nbsp;&nbsp; &nbsp;双向链表可以使每一个节点可以与上一个和下一个节点相连，就需要在单向链表的结构体中加一个指向上一个节点的指针<br><br>
+                            <div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>
+                                struct List{<br><br>
+                                    char Nam[30];<br><br>
+                                    float Num;<br><br>
+                                    struct List *pNext,*pLast;<br><br>
+                                };                                
+                            </div><br><br>
+                            &nbsp; &nbsp;&nbsp; &nbsp;如何创建： 先开辟一个pNew的节点，让pHead和pEnd等于pNew（pHead=pEnd=pNew;），设一个循环，然后开辟pNew，让 pEnd->pNext=pNew; 再让 pNew->pLast=pEnd; 这样就实现了两个链表之间的相互连接
+                            <br><br><img src="./pic/LIST.png" style="width: 95%;"><br><br>
+                            <div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>
+                                struct List *Create (struct List *pHead){<br><br>
+                                    struct List *pNew,*pEnd;<br><br>
+                                    pNew=(struct List*)malloc(sizeof(struct List));<br><br>
+                                    printf("输入姓名 学号：");<br><br>
+                                    scanf("%s %f",&pNew->Nam,&pNew->Num);<br><br>
+                                    pHead=pNew;<br><br>
+                                    len+=1;<br><br>
+                                    while (pNew->Num!=0){<br><br>
+                                        if (len==1){   &nbsp; &nbsp;&nbsp; &nbsp; //len是一个int型的全局变量<br><br>
+                                            pEnd=pNew;<br><br>
+                                            pNew->pNext=NULL;<br><br>
+                                            pNew->pLast=NULL;<br><br>
+                                        }<br><br>
+                                        else{<br><br>
+                                            pNew->pLast=pEnd;<br><br>
+                                            pEnd->pNext=pNew;<br><br>
+                                            pEnd=pEnd->pNext;<br><br>
+                                            pNew->pNext=NULL;<br><br>
+                                        }<br><br>
+                                        pNew=(struct List*)malloc(sizeof(struct List));<br><br>
+                                        printf("输入姓名 学号：");<br><br>
+                                        scanf("%s %f",&pNew->Nam,&pNew->Num);<br><br>
+                                        len+=1;<br><br>
+                                    }<br><br>
+                                    len-=1;<br><br>
+                                    free(pNew);<br><br>
+                                    return pHead;<br><br>
+                                }
+                                </div><br><br>
+                                遍历<br><br>
+                                &nbsp; &nbsp;&nbsp; &nbsp;遍历这里就好说了，与单向链表没啥区别，只不过就是可以有反向遍历了<br><br>
+                                <div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>
+                                    void Print(struct List *pHead){<br><br>
+                                        struct List *pA,*pB;<br><br>
+                                        pA=pHead;<br><br>
+                                        printf("\n\n\n正向遍历\n\n----------共%d个成员---------\n",len);<br><br>
+                                        while (pA!=NULL){<br><br>
+                                            printf("姓名：%s\n学号：%g\n\n",pA->Nam,pA->Num);<br><br>
+                                            if(pA->pNext==NULL){<br><br>
+                                                pB=pA;<br><br>
+                                            }<br><br>
+                                            pA=pA->pNext;<br><br>
+                                        }<br><br>
+                                        printf("\n\n\n反向遍历\n\n----------共%d个成员---------\n",len);<br><br>
+                                        while (pB->pLast!=NULL){<br><br>
+                                            printf("姓名：%s\n学号：%g\n\n",pB->Nam,pB->Num);<br><br>
+                                            pB=pB->pLast;<br><br>
+                                        }<br><br>
+                                        printf("姓名：%s\n学号：%g\n\n",pB->Nam,pB->Num);<br><br>
+                                    }
+                                    </div><br><br>
+                                    完整代码<br><br>
+                                    <div class="code" style="color: rgb(212, 212, 212);"><img src="./pic/codepicblue.png" class="codeimg"><hr>
+                                        #include <stdio.h><br><br>
+                                            #include <stdlib.h><br><br><br><br>
+                                            
+                                            struct List{<br><br>
+                                                char Nam[30];<br><br>
+                                                float Num;<br><br>
+                                                struct List *pNext,*pLast;<br><br>
+                                            };<br><br><br><br>
+                                            
+                                            int len=0;<br><br><br><br>
+                                            
+                                            struct List *Create (struct List *pHead){<br><br>
+                                                struct List *pNew,*pEnd;<br><br>
+                                                pNew=(struct List*)malloc(sizeof(struct List));<br><br>
+                                                printf("输入姓名 学号：");<br><br>
+                                                scanf("%s %f",&pNew->Nam,&pNew->Num);<br><br>
+                                                pHead=pNew;<br><br>
+                                                len+=1;<br><br>
+                                                while (pNew->Num!=0){<br><br>
+                                                    if (len==1){<br><br>
+                                                        pEnd=pNew;<br><br>
+                                                        pNew->pNext=NULL;<br><br>
+                                                        pNew->pLast=NULL;<br><br>
+                                                    }<br><br>
+                                                    else{<br><br>
+                                                        pNew->pLast=pEnd;<br><br>
+                                                        pEnd->pNext=pNew;<br><br>
+                                                        pEnd=pEnd->pNext;<br><br>
+                                                        pNew->pNext=NULL;<br><br>
+                                                    }<br><br>
+                                                    pNew=(struct List*)malloc(sizeof(struct List));<br><br>
+                                                    printf("输入姓名 学号：");<br><br>
+                                                    scanf("%s %f",&pNew->Nam,&pNew->Num);<br><br>
+                                                    len+=1;<br><br>
+                                                }<br><br>
+                                                len-=1;<br><br>
+                                                free(pNew);<br><br>
+                                                return pHead;<br><br>
+                                            }<br><br><br><br>
+                                            
+                                            void Print(struct List *pHead){<br><br>
+                                                struct List *pA,*pB;<br><br>
+                                                pA=pHead;<br><br>
+                                                printf("\n\n\n正向遍历\n\n----------共%d个成员---------\n",len);<br><br>
+                                                while (pA!=NULL){<br><br>
+                                                    printf("姓名：%s\n学号：%g\n\n",pA->Nam,pA->Num);<br><br>
+                                                    if(pA->pNext==NULL){<br><br>
+                                                        pB=pA;<br><br>
+                                                    }<br><br>
+                                                    pA=pA->pNext;<br><br>
+                                                }<br><br>
+                                                printf("\n\n\n反向遍历\n\n----------共%d个成员---------\n",len);<br><br>
+                                                while (pB->pLast!=NULL){<br><br>
+                                                    printf("姓名：%s\n学号：%g\n\n",pB->Nam,pB->Num);<br><br>
+                                                    pB=pB->pLast;<br><br>
+                                                }<br><br>
+                                                printf("姓名：%s\n学号：%g\n\n",pB->Nam,pB->Num);<br><br>
+                                            }<br><br>
+                                            <br><br>
+                                            int main(){<br><br>
+                                                struct List *pHead;<br><br>
+                                                pHead=Create(pHead);<br><br>
+                                                Print(pHead);<br><br>
+                                            }
+                                                
+                                            </div>
+                                            <a href='https://github.com/kongbaiblog/C-lianbiao' target='_bank'>GitHub:https://github.com/kongbaiblog/C-lianbiao</a>
+                                            <h5 style="font-family: font1;text-align: center;font-size: large;">&copy;2023&nbsp; &nbsp;空白</h5>
+                        </h4>
+                    </h2>
+                </div>
+            </div1>
+            
+        </body>
+    </head>
+</html>
+<!---
+-->
